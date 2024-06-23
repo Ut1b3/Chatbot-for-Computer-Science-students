@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'authapp/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Companion</h1>
+    </header>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            <label for="username">Matriculation/Registration Number</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Login</button>
+        </form>
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <p>Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+    </div>
+    <footer>
+        <a href="{% url 'about' %}">About Us</a>
+    </footer>
+</body>
+</html>

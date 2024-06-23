@@ -1,0 +1,17 @@
+{% extends "authapp/base.html" %}
+
+{% block content %}
+{%load static%}
+<link rel="stylesheet" href="{% static 'authapp/style.css' %}">
+<div class="main">
+    <h1 class="welcome">Welcome, {{ user.first_name }}</h1>
+    <p>What would you like to do today?</p>
+    <div class="cta-buttons">
+        <button onclick="location.href='{% url 'chatbot' %}'">Start Chatting</button>
+        <button onclick="location.href='{% url 'reminders' %}'">Set a Reminder</button>
+    </div>
+    <h2>Latest Updates</h2>
+    <!-- Latest updates content -->
+</div>
+
+{% endblock %}

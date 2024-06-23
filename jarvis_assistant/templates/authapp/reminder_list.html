@@ -1,0 +1,11 @@
+<ul id="reminder-list">
+    {% for reminder in reminders %}
+    <li class="reminder" data-due-date="{{ reminder.due_date }}">
+        <strong>{{ reminder.course_code }}</strong> - {{ reminder.description }} ({{ reminder.due_date }} {{ reminder.due_time }})
+        <form method="post" action="{% url 'delete_reminder' reminder.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="delete-button">Delete</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>

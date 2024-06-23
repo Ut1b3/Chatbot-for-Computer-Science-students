@@ -1,0 +1,20 @@
+{% extends "authapp/base.html" %}
+
+{% block content %}
+<div class="about-container">
+    <h1>About COMPanion</h1>
+    <p>
+        COMPanion is an advanced assistant designed to help you manage your reminders, chat with an intelligent bot, and more. Our mission is to make your life easier by providing a reliable and efficient assistant at your fingertips.
+    </p>
+    <p>
+        With COMPanion, you can set reminders, have intelligent conversations, and keep track of important tasks. Our chatbot is powered by the latest AI technology, ensuring that you receive accurate and helpful responses to your queries.
+    </p>
+
+    {% if user.is_authenticated %}
+        <button type="button" class="home-button" onclick="window.location.href='{% url 'home' %}'">Back to Home</button>
+    {% else %}
+        <button type="button" class="auth-button" onclick="window.location.href='{% url 'login' %}'">Login</button>
+        <button type="button" class="auth-button" onclick="window.location.href='{% url 'register' %}'">Register</button>
+    {% endif %}
+</div>
+{% endblock %}

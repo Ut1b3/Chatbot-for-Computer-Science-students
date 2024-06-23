@@ -1,0 +1,388 @@
+/* General styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* Header styles */
+header {
+    background: linear-gradient(to right, #3a3f51, #4a76a8);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    transition: background 0.3s, color 0.3s;
+}
+
+header nav a:hover {
+    background: white;
+    color: #4a76a8;
+}
+
+/* Main container styles */
+.main-container, .register-container, .about-container, .history-container, .reminder-content, .main, .login-container {
+    max-width: 900px;
+    margin: 100px auto 30px auto; /* Adjusted margin to account for fixed header */
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 40px;
+}
+
+h2 {
+    color: #4a76a8;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* Button styles */
+button {
+    background: linear-gradient(to right, #4a76a8, #3a3f51);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s, transform 0.3s;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: linear-gradient(to right, #3a3f51, #4a76a8);
+    transform: scale(1.05);
+}
+
+input[type="text"], input[type="date"], input[type="time"], input[type="password"], textarea {
+    width: calc(100% - 24px);
+    padding: 15px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[type="text"]:focus, input[type="date"]:focus, input[type="time"]:focus, input[type="password"]:focus, textarea:focus {
+    border-color: #4a76a8;
+    box-shadow: 0 0 8px rgba(74, 118, 168, 0.5);
+    outline: none;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* Chatbot styles */
+.message {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-end;
+    transition: transform 0.3s;
+}
+
+.message.user-message {
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.message.bot-message {
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.message .message-text {
+    background: #eceff1;
+    padding: 15px 20px;
+    border-radius: 20px;
+    max-width: 70%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s, transform 0.3s;
+}
+
+.message.user-message .message-text {
+    background: #4a76a8;
+    color: white;
+}
+
+.message.bot-message .message-text {
+    background: #f4f6f9;
+}
+
+.message .emoji {
+    margin-left: 5px;
+}
+
+#chat-form {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: #f4f6f9;
+    border-top: 1px solid #e0e0e0;
+    position: relative;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#chat-form textarea {
+    flex: 1;
+    padding: 12px 15px;
+    border-radius: 25px;
+    border: 1px solid #e0e0e0;
+    margin-right: 10px;
+    resize: none;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#chat-form textarea:focus {
+    border-color: #4a76a8;
+    box-shadow: 0 0 8px rgba(74, 118, 168, 0.5);
+    outline: none;
+}
+
+#chat-form button {
+    background: linear-gradient(to right, #4a76a8, #3a3f51);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+}
+
+#chat-form button.voice-button {
+    background: transparent;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+#chat-form button.voice-button img {
+    width: 25px;
+    height: 25px;
+}
+
+#chat-form button:hover {
+    background: linear-gradient(to right, #3a3f51, #4a76a8);
+    transform: scale(1.05);
+}
+
+.quick-reply-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.quick-reply-buttons button {
+    background: #4a76a8;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.quick-reply-buttons button:hover {
+    background: #3a3f51;
+    transform: scale(1.05);
+}
+
+.quick-reply-buttons button.no-thanks {
+    background: transparent;
+    color: #4a76a8;
+    border: 1px solid #4a76a8;
+}
+
+.quick-reply-buttons button.no-thanks:hover {
+    background: #4a76a8;
+    color: white;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background: #3a3f51;
+    color: white;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    transition: background 0.3s, color 0.3s;
+}
+
+footer a:hover {
+    background: white;
+    color: #4a76a8;
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f4f6f9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4a76a8;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #365a7c;
+}
+
+/* Chat history styles */
+.history-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.history-container ul li {
+    padding: 10px;
+    background: #f4f6f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.history-container ul li:hover {
+    background: #e0e0e0;
+    transform: scale(1.02);
+}
+
+.history-container ul li button {
+    background: #ff4a4a;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.history-container ul li button:hover {
+    background: #cc3b3b;
+    transform: scale(1.05);
+}
+
+.register-container form button, .register-container .messages {
+    margin-top: 20px;
+}
+
+.register-container .messages p {
+    background: #ffdddd;
+    color: #a33a3a;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.reminder-content form label {
+    font-weight: bold;
+}
+
+.reminder-content form button {
+    margin-top: 20px;
+}
+
+.reminder-content ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.reminder-content ul li {
+    padding: 10px;
+    background: #f4f6f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.reminder-content ul li:hover {
+    background: #e0e0e0;
+    transform: scale(1.02);
+}
+
+.reminder-content ul li form button {
+    background: #ff4a4a;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.reminder-content ul li form button:hover {
+    background: #cc3b3b;
+    transform: scale(1.05);
+}
+
+.notification {
+    background: #ffeb3b;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+}
+
+.notification .icon {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.notification p {
+    margin: 0;
+    font-size: 16px;
+}

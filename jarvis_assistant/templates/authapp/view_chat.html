@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Chat</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'authapp/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Companion</h1>
+        <h2>{{ chat.name }}</h2>
+        <a href="{% url 'home' %}" class="back-to-home">Back to Home</a>
+        <a href="{% url 'chat_history' %}" class="chat-history">Chat History</a>
+    </header>
+    <div class="chat-container">
+        <div id="chat-box">
+            <div id="chat-history">
+                {% for message in chat.history %}
+                <div class="message {{ message.type }}-message">
+                    <div class="message-text">{{ message.text }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <form id="chat-form" method="post" action="{% url 'chatbot' %}">
+            {% csrf_token %}
+            <textarea id="user_input" name="user_input" placeholder="Type your message here..."></textarea>
+            <button type="submit" class="send-button">Send</button>
+            <button type="button" id="clear-chat" class="clear-button">Clear</button>
+            <button type="button" id="save-chat" class="save-button">Save</button>
+            <button type="button" id="voice-recognition" class="voice-button">🎤</button>
+        </form>
+    </div>
+    <footer>
+        <a href="{% url 'about' %}">About Us</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatForm = document.getElementById('chat-form');
+            const chatBox = document.getElementById('chat-box');
+            const chatHistory = document.getElementById('chat-history');
+            const user_input = document.getElementById('user_input');
+            const clearChatButton = document.getElementById('clear-chat');
+            const saveChatButton = document.getElementById('save-chat');
+            const voiceRecognitionButton = document.getElementById('voice-recognition');
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const currentChatKey = `current_chat_${{{ chat.id }}}`;
+            let chatName = '{{ chat.name }}';
+
+            // Load current chat from localStorage
+            const loadCurrentChat = () => {
+                const savedChat = localStorage.getItem(currentChatKey);
+                if (savedChat) {
+                    const chatMessages = JSON.parse(savedChat);
+                    chatMessages.forEach(message => {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.className = `message ${message.type}-message`;
+                        messageDiv.innerHTML = `<div class="message-text">${message.text}</div>`;
+                        chatHistory.appendChild(messageDiv);
+                    });
+                }
+            };
+
+            // Clear current chat
+            const clearCurrentChat = () => {
+                chatHistory.innerHTML = '';
+                localStorage.removeItem(currentChatKey);
+            };
+
+            // Handle clear chat button
+            clearChatButton.onclick = () => {
+                const userChoice = confirm("Do you want to clear the chat?");
+                if (userChoice) {
+                    clearCurrentChat();
+                }
+            };
+
+            // Save current chat
+            const saveCurrentChat = () => {
+                if (!chatName) {
+                    chatName = prompt("Enter a name for this conversation:");
+                    if (!chatName) {
+                        alert("Chat name is required to save the conversation.");
+                        return;
+                    }
+                }
+                const chatMessages = JSON.parse(localStorage.getItem(currentChatKey) || '[]');
+                const chatLength = chatMessages.length;
+                const data = {
+                    chat_name: chatName,
+                    chat_length: chatLength,
+                    chat_history: chatMessages
+                };
+                fetch('{% url "save_chat" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify(data)
+                }).then(response => {
+                    if (response.ok) {
+                        alert("Chat saved successfully!");
+                    } else {
+                        alert("Failed to save chat.");
+                    }
+                }).catch(error => {
+                    console.error("Error saving chat:", error);
+                });
+            };
+
+            // Handle save chat button
+            saveChatButton.onclick = saveCurrentChat;
+
+            chatForm.onsubmit = async function(e) {
+                e.preventDefault();
+                const userInput = user_input.value.trim();
+                if (!userInput) return;
+
+                // Append user message
+                const userMessageDiv = document.createElement('div');
+                userMessageDiv.className = 'message user-message';
+                userMessageDiv.innerHTML = `<div class="message-text">${userInput}</div>`;
+                chatHistory.appendChild(userMessageDiv);
+
+                // Scroll to bottom
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                // Clear the input box
+                user_input.value = '';
+
+                // Fetch bot response
+                try {
+                    const response = await fetch('{% url "chat_response" %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': csrfToken
+                        },
+                        body: `user_input=${encodeURIComponent(userInput)}`
+                    });
+                    const data = await response.json();
+
+                    // Append bot response
+                    const botResponseDiv = document.createElement('div');
+                    botResponseDiv.className = 'message bot-response';
+                    botResponseDiv.innerHTML = `<div class="message-text">${data.bot_response}</div>`;
+                    chatHistory.appendChild(botResponseDiv);
+
+                    // Scroll to bottom
+                    chatBox.scrollTop = chatBox.scrollHeight;
+
+                    // Save the current chat session
+                    const messages = [];
+                    chatHistory.querySelectorAll('.message').forEach(messageDiv => {
+                        const messageText = messageDiv.querySelector('.message-text').innerText;
+                        const messageType = messageDiv.classList.contains('user-message') ? 'user' : 'bot';
+                        messages.push({ text: messageText, type: messageType });
+                    });
+                    localStorage.setItem(currentChatKey, JSON.stringify(messages));
+                } catch (error) {
+                    console.error('Error fetching bot response:', error);
+                }
+            };
+
+            user_input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    chatForm.onsubmit(e);
+                }
+            });
+
+            // Voice recognition functionality
+            const startVoiceRecognition = () => {
+                if (!('webkitSpeechRecognition' in window)) {
+                    alert('Your browser does not support voice recognition. Please use a different browser.');
+                    return;
+                }
+
+                const recognition = new webkitSpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
+
+                recognition.onstart = () => {
+                    console.log('Voice recognition started');
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    user_input.value = transcript;
+                    chatForm.onsubmit(new Event('submit'));
+                };
+
+                recognition.onerror = (event) => {
+                    console.error('Voice recognition error', event.error);
+                };
+
+                recognition.onend = () => {
+                    console.log('Voice recognition ended');
+                };
+
+                recognition.start();
+            };
+
+            voiceRecognitionButton.onclick = startVoiceRecognition;
+
+            // Load current chat on page load
+            loadCurrentChat();
+        });
+    </script>
+</body>
+</html>
